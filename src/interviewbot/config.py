@@ -26,7 +26,7 @@ class Settings:
     llm_base_url: str = "http://localhost:11434/v1/"
     llm_api_key: str = "ollama"
     llm_model: str = "llama3.1:8b"
-    llm_timeout_seconds: float = 30.0
+    llm_timeout_seconds: float = 180.0
     guide_path: Path = Path("config/guide_de.yaml")
     system_prompt_path: Path = Path("prompts/system_prompt_de.md")
     db_path: Path = Path("data/interviews.sqlite3")
@@ -48,7 +48,7 @@ class Settings:
             llm_base_url=g("LLM_BASE_URL", "http://localhost:11434/v1/"),
             llm_api_key=g("LLM_API_KEY", "ollama"),
             llm_model=g("LLM_MODEL", "llama3.1:8b"),
-            llm_timeout_seconds=float(g("LLM_TIMEOUT_SECONDS", "30") or 30),
+            llm_timeout_seconds=float(g("LLM_TIMEOUT_SECONDS", "180") or 180),
             guide_path=Path(g("GUIDE_PATH", "config/guide_de.yaml")),
             system_prompt_path=Path(g("SYSTEM_PROMPT_PATH", "prompts/system_prompt_de.md")),
             db_path=Path(g("DB_PATH", "data/interviews.sqlite3")),

@@ -10,4 +10,4 @@ python -m pip install openai
 ollama pull llama3.1:8b
 ```
 
-Installieren Sie außerdem das Python-Paket `openai`, das der API-Client benötigt. Die Verbindung erwartet Ollama unter `http://localhost:11434/v1/`; `LLM_MODEL`, `LLM_BASE_URL` und `LLM_API_KEY` können bei Bedarf über Umgebungsvariablen überschrieben werden. Für den Mock-Modus setzen Sie `LLM_PROVIDER=mock`.
+Installieren Sie außerdem das Python-Paket `openai`, das der API-Client benötigt. Die Verbindung erwartet Ollama unter `http://localhost:11434/v1/`; das Timeout beträgt standardmäßig 180 Sekunden, damit auch das erste Laden des lokalen Modells Zeit hat. `LLM_MODEL`, `LLM_BASE_URL`, `LLM_API_KEY` und `LLM_TIMEOUT_SECONDS` können bei Bedarf über Umgebungsvariablen überschrieben werden. Für den Mock-Modus setzen Sie `LLM_PROVIDER=mock`.
