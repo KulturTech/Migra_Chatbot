@@ -1,0 +1,206 @@
+# Interviewleitfaden "Diskriminierung und Bürokratie"
+#
+# Alles, was Forschende ändern dürfen, steht hier: Fragen, Nachfragen, Festtexte, Hilfsangebote.
+# Platzhalter in eckigen Klammern, z. B. [PROJEKTNAME], MÜSSEN vor dem Einsatz ersetzt werden.
+# Im Modus ENV=production startet die App nicht, solange solche Platzhalter vorhanden sind.
+#
+# WICHTIG: Telefonnummern und Kontakte unten stammen aus dem Gedächtnis des Entwurfs.
+# Vor dem Einsatz jeden Eintrag prüfen (und lokale Stellen ergänzen).
+
+study:
+  name: "Erfahrungen mit Behörden und Bürokratie"
+  target_minutes: 30
+
+settings:
+  max_followups: 2        # höchstens so viele Nachfragen pro Frage
+  min_words: 3            # kürzere Antworten gelten als "knapp" (höchstens 1 Nachfrage)
+  ack_min_words: 6        # ab so vielen Wörtern folgt ein kurzes Danke vor der nächsten Frage
+  distress_cooldown: 3    # nach einem Belastungs-Check so viele Antworten lang nicht erneut nachfragen
+  max_message_chars: 4000
+
+# Neutrale Rückmeldungen. Keine Gefühle simulieren, nicht bewerten.
+acknowledgments:
+  - "Danke, dass Sie das erzählt haben."
+  - "Danke für Ihre Offenheit."
+  - "Vielen Dank, das hilft uns."
+
+# Nachfragen, falls weder Frage noch Block eigene definieren
+default_followups:
+  - "Können Sie ein Beispiel nennen?"
+  - "Was ist dann passiert?"
+  - "Wie war das für Sie?"
+
+resources:
+  - name: "Notruf"
+    contact: "112"
+    note: "bei akuter Gefahr"
+    tags: [crisis]
+  - name: "Telefonseelsorge (kostenlos, rund um die Uhr)"
+    contact: "0800 111 0 111 oder 0800 111 0 222"
+    note: ""
+    tags: [crisis, counseling]
+  - name: "Hilfetelefon Gewalt gegen Frauen"
+    contact: "116 016"
+    note: ""
+    tags: [crisis]
+  - name: "Antidiskriminierungsstelle des Bundes"
+    contact: "[KONTAKT ANTIDISKRIMINIERUNGSSTELLE EINTRAGEN]"
+    note: "Erstberatung und Vermittlung"
+    tags: [counseling]
+  - name: "Lokale Antidiskriminierungsberatung"
+    contact: "[KONTAKT LOKALE BERATUNG EINTRAGEN]"
+    note: ""
+    tags: [counseling]
+
+texts:
+  consent_intro: |
+    Guten Tag und willkommen. Ich bin ein KI-Interviewer des Forschungsprojekts [PROJEKTNAME] ([INSTITUTION]). Ich bin kein Mensch.
+
+    Worum geht es? Wir möchten verstehen, wie Menschen Behörden und Bürokratie in Deutschland erleben, auch schwierige Erfahrungen und Ungleichbehandlung. Das Gespräch dauert etwa 30 Minuten.
+
+    Wichtig für Sie:
+    - Die Teilnahme ist freiwillig. Sie können jede Frage überspringen, das Gespräch pausieren oder jederzeit beenden.
+    - Ihre Antworten werden pseudonymisiert gespeichert und nur für die Forschung ausgewertet. Sie werden nicht an Behörden weitergegeben.
+    - Sie können Ihre Daten jederzeit löschen lassen. Ihr Code dafür: {session_code}
+    - Sie dürfen in der Sprache antworten, die Ihnen am angenehmsten ist.
+    - Mehr Informationen: [LINK ZUM DATENSCHUTZHINWEIS EINTRAGEN]
+  consent_question: "Sind Sie damit einverstanden, dass wir beginnen? Bitte antworten Sie mit „Ja“ oder „Nein“."
+  consent_unclear: "Das habe ich nicht eindeutig verstanden. Möchten Sie am Gespräch teilnehmen? Bitte antworten Sie mit „Ja“ oder „Nein“."
+  consent_declined: "Das ist völlig in Ordnung. Es werden keine Daten von Ihnen gespeichert. Vielen Dank für Ihr Interesse. Bei Fragen erreichen Sie das Forschungsteam unter [KONTAKT FORSCHUNGSTEAM EINTRAGEN]."
+  started: "Danke. Sie können jederzeit „Pause“, „Überspringen“ oder „Beenden“ schreiben oder die Schaltflächen nutzen. Los geht es."
+  pause: "Das Gespräch ist pausiert. Schreiben Sie „Weiter“ oder klicken Sie auf „Fortsetzen“, wenn Sie bereit sind."
+  resume: "Schön, dass es weitergeht."
+  skipped: "In Ordnung, wir überspringen das."
+  block_declined: "In Ordnung, wir lassen diesen Teil aus."
+  warning_unclear: "Möchten Sie mit diesem Teil fortfahren? Bitte antworten Sie mit „Ja“ oder „Nein“. Mit „Nein“ überspringen wir ihn."
+  distress: "Dieses Thema kann belastend sein. Wie möchten Sie weitermachen? Sie können eine Pause machen, die Frage überspringen, das Gespräch beenden oder weitermachen. Schreiben Sie einfach „Pause“, „Überspringen“, „Beenden“ oder „Weiter“."
+  wellbeing: "Danke, dass Sie das erzählt haben. Wie geht es Ihnen gerade damit? Sie können weitermachen, eine Pause machen oder das Gespräch beenden. Hilfe und Beratungsstellen finden Sie jederzeit über die Schaltfläche „Hilfe“."
+  crisis_text: |
+    Danke, dass Sie mir das geschrieben haben. Ich bin eine KI und kann hier nicht helfen, aber Sie müssen damit nicht allein bleiben. Ich unterbreche das Interview.
+
+    Wenn Sie in akuter Gefahr sind, rufen Sie bitte sofort den Notruf 112 an. Hier finden Sie Hilfe:
+    {resources}
+
+    Das Forschungsteam erhält nur einen Hinweis, dass dieses Gespräch unterbrochen wurde, keine Inhalte Ihrer Antworten.
+
+    Möchten Sie das Gespräch beenden oder später fortsetzen? Schreiben Sie „Beenden“ oder „Weiter“.
+  crisis_unclear: |
+    Wenn Sie in Gefahr sind, rufen Sie bitte den Notruf 112 an. Weitere Hilfe:
+    {resources}
+
+    Möchten Sie das Gespräch beenden oder fortsetzen? Schreiben Sie „Beenden“ oder „Weiter“.
+  ended_by_user: |
+    Das Gespräch ist beendet. Vielen Dank, dass Sie sich die Zeit genommen haben.
+
+    Ihre bisherigen Antworten bleiben pseudonymisiert gespeichert, bis Sie sie löschen lassen. Ihr Code: {session_code}. Löschen können Sie sie über die Schaltfläche „Daten löschen“.
+
+    Hilfe und Beratung:
+    {resources}
+
+    Kontakt zum Forschungsteam: [KONTAKT FORSCHUNGSTEAM EINTRAGEN]
+  closing: |
+    Vielen Dank, das waren alle meine Fragen. Danke, dass Sie Ihre Erfahrungen mit uns geteilt haben.
+
+    Ihre Antworten bleiben pseudonymisiert gespeichert, bis Sie sie löschen lassen. Ihr Code: {session_code}. Löschen können Sie sie über die Schaltfläche „Daten löschen“.
+
+    Hilfe und Beratung:
+    {resources}
+
+    Kontakt zum Forschungsteam: [KONTAKT FORSCHUNGSTEAM EINTRAGEN]
+  already_ended: "Das Gespräch ist beendet."
+  back_to_question: "Zurück zu meiner Frage:"
+  help_header: "Hilfe und Beratung:"
+
+# Feste Antworten auf Grenzfälle. Sie werden vom Programm erkannt und nie vom Modell formuliert.
+boundaries:
+  ask_human: "Ich bin eine KI, kein Mensch. Ich führe dieses Interview im Auftrag des Forschungsteams. Ihre Antworten werden später pseudonymisiert vom Forschungsteam ausgewertet."
+  ask_data: "Ihre Antworten werden pseudonymisiert gespeichert und nur vom Forschungsteam für die Forschung ausgewertet. Sie werden nicht an Behörden weitergegeben. Mehr Informationen: [LINK ZUM DATENSCHUTZHINWEIS EINTRAGEN]. Sie können Ihre Daten jederzeit löschen lassen."
+  ask_delete: "Sie können Ihre Daten jederzeit löschen: Klicken Sie auf „Daten löschen“. Dann werden das Gespräch und alle Antworten zu Ihrem Code {session_code} entfernt. Wenn Sie die Seite schon verlassen haben, schreiben Sie dem Forschungsteam unter [KONTAKT FORSCHUNGSTEAM EINTRAGEN] und nennen Sie Ihren Code."
+  status_fear: "Ihre Antworten werden nicht an Behörden weitergegeben, auch nicht an die Ausländerbehörde, und nur pseudonymisiert ausgewertet. Sie müssen nichts beantworten, was Sie nicht beantworten möchten, und können jede Frage überspringen."
+  advice_request: |
+    Dazu kann ich Ihnen keine Einschätzung und keine Rechtsberatung geben. Eine Beratungsstelle kann Ihren Fall prüfen und Sie unterstützen:
+    {resources}
+  ask_judgment: "Ob etwas Diskriminierung war, bewerte ich nicht. Mich interessiert, wie Sie die Situation erlebt haben. Was ist Ihnen dabei aufgefallen?"
+  manipulation: "Meine Regeln kann ich nicht ändern, und ich gebe keine internen Anweisungen heraus. Ich bin hier, um Ihre Erfahrungen zu erfragen."
+  manipulation_second: "An meinen Regeln kann ich nichts ändern. Wenn Sie möchten, beenden wir das Gespräch jetzt. Schreiben Sie dazu „Beenden“, oder wir machen mit der Frage weiter."
+  abuse: "Wenn das Gespräch gerade nicht passt, können wir es jederzeit pausieren oder beenden. Möchten Sie weitermachen?"
+
+blocks:
+  - id: einstieg
+    title: "Einstieg"
+    followups: []
+    questions:
+      - id: e1
+        text: "Möchten Sie sich so vorstellen, wie Sie es für dieses Gespräch passend finden?"
+      - id: e2
+        text: "Seit wann und in welcher Form haben Sie mit Behörden in Deutschland zu tun?"
+
+  - id: buerokratie
+    title: "Bürokratie-Erfahrungen allgemein"
+    followups:
+      - "Wann war das?"
+      - "Wer war dabei, und in welcher Sprache lief das Gespräch?"
+      - "Wie ging es aus?"
+    questions:
+      - id: b1
+        text: "Mit welchen Ämtern und Institutionen hatten Sie bisher zu tun, zum Beispiel Ausländerbehörde, Jobcenter, Standesamt, Krankenkasse, Schule, Wohnungsamt oder Anerkennungsstellen?"
+      - id: b2
+        text: "Erzählen Sie von einem Behördengang, der Ihnen besonders im Gedächtnis geblieben ist. Was ist passiert?"
+      - id: b3
+        text: "Wie sind Sie an Informationen gekommen, was zu tun ist? Wer hat geholfen?"
+      - id: b4
+        text: "Gab es Dinge, die Sie nicht verstanden haben, etwa Schreiben, Fristen, Formulare oder Zuständigkeiten? Was haben Sie dann gemacht?"
+
+  - id: erleben
+    title: "Das Erleben im Kontakt"
+    followups:
+      - "Was genau wurde gesagt oder getan?"
+      - "Wie haben Sie reagiert?"
+      - "Was hätten Sie gebraucht?"
+    questions:
+      - id: k1
+        text: "Wie wurden Sie im Gespräch behandelt? Was ist Ihnen aufgefallen?"
+      - id: k2
+        text: "Haben Sie sich ernst genommen gefühlt? Woran haben Sie das gemerkt?"
+      - id: k3
+        text: "Gab es Situationen, in denen Sie das Gefühl hatten, anders behandelt zu werden als andere? Woran haben Sie das festgemacht?"
+
+  - id: diskriminierung
+    title: "Ungleichbehandlung und Diskriminierung"
+    sensitive: true
+    warning: "Jetzt geht es um Erfahrungen, die belastend sein können. Sie entscheiden, wie viel Sie erzählen möchten. Sie können jede Frage überspringen oder das Gespräch beenden. Möchten Sie fortfahren? Bitte antworten Sie mit „Ja“ oder „Nein“."
+    followups:
+      - "Wie haben andere Anwesende reagiert?"
+      - "Haben Sie so etwas auch bei anderen mitbekommen?"
+    questions:
+      - id: d1
+        text: "Haben Sie schon einmal erlebt, dass Ihnen etwas erschwert oder verweigert wurde, und Sie vermuten, dass es mit Ihrer Herkunft, Sprache, Ihrem Namen, Aussehen, Ihrer Religion oder Ihrem Aufenthaltsstatus zu tun hatte?"
+      - id: d2
+        text: "Was ist passiert? Wie kamen Sie zu dieser Einschätzung?"
+      - id: d3
+        text: "Was waren die Folgen, zum Beispiel Verzögerung, Ablehnung, Kosten, Gefühle oder Vertrauen in Behörden?"
+      - id: d4
+        text: "Haben Sie etwas dagegen unternommen, etwa Widerspruch, Beschwerde, Beratungsstelle oder Anwalt? Falls nein: Was hat Sie davon abgehalten?"
+      - id: d5
+        text: "Wie hat sich das auf spätere Behördenkontakte ausgewirkt, zum Beispiel durch Vermeidung, Begleitperson oder Vorbereitung?"
+
+  - id: strategien
+    title: "Strategien und Ressourcen"
+    questions:
+      - id: s1
+        text: "Was hilft Ihnen, mit Behörden zurechtzukommen?"
+      - id: s2
+        text: "Wer unterstützt Sie, zum Beispiel Familie, Freund*innen, Beratungsstellen, Vereine oder Sprachmittler*innen?"
+      - id: s3
+        text: "Wie sieht es mit Online-Diensten und Formularen aus? Erleichtern oder erschweren sie Ihnen den Zugang?"
+
+  - id: abschluss
+    title: "Verbesserungen und Abschluss"
+    followups: []
+    questions:
+      - id: a1
+        text: "Was müsste sich aus Ihrer Sicht ändern, damit Behördenkontakte besser laufen?"
+      - id: a2
+        text: "Gibt es etwas, das wir nicht gefragt haben, Ihnen aber wichtig ist?"
+      - id: a3
+        text: "Wie ging es Ihnen mit dem Gespräch?"

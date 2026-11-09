@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gespräch mit dem Forschungsteam</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --surface: #ffffff; --ink: #1d2230; --muted: #5d6475; --line: #d9d7d0;
+    --accent: #1f5f8b; --accent-ink: #ffffff; --bot: #eef2f6; --user: #dfeadf; --warn: #8a3b12;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14171d; --surface: #1c2029; --ink: #eceff4; --muted: #a2a9ba; --line: #323746;
+            --accent: #6aaee0; --accent-ink: #0e1a24; --bot: #232937; --user: #26382b; --warn: #f0a878; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .app { max-width: 720px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; padding: 0 16px; }
+  header { padding: 16px 0 8px; }
+  h1 { font-size: 1.15rem; margin: 0 0 2px; }
+  .sub { color: var(--muted); font-size: .88rem; margin: 0; }
+  #log { flex: 1; overflow-y: auto; padding: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 88%; padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.user { background: var(--user); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.warning, .msg.crisis { border-left: 4px solid var(--warn); }
+  .msg.system { align-self: center; background: transparent; color: var(--muted); font-size: .88rem; text-align: center; }
+  form { display: flex; gap: 8px; padding: 8px 0; }
+  textarea { flex: 1; resize: none; min-height: 48px; max-height: 160px; padding: 10px 12px; font: inherit;
+             color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+  button { font: inherit; border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
+           color: var(--ink); padding: 8px 12px; cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); padding: 0 18px; }
+  button:disabled, textarea:disabled { opacity: .5; cursor: not-allowed; }
+  button:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 0 14px; }
+  .tools .danger { margin-left: auto; color: var(--warn); }
+  #start { margin: 24px auto; padding: 12px 22px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Gespräch über Ihre Erfahrungen mit Behörden</h1>
+    <p class="sub">Sie sprechen mit einer KI. Die Teilnahme ist freiwillig. <span id="code"></span></p>
+  </header>
+
+  <div id="log" role="log" aria-live="polite" aria-label="Gesprächsverlauf"></div>
+  <button id="start" class="primary" type="button">Gespräch starten</button>
+
+  <form id="form" hidden>
+    <textarea id="input" rows="2" aria-label="Ihre Antwort" placeholder="Ihre Antwort, in jeder Sprache …" maxlength="4000"></textarea>
+    <button class="primary" type="submit" id="send">Senden</button>
+  </form>
+
+  <div class="tools" id="tools" hidden>
+    <button type="button" id="pause">Pause</button>
+    <button type="button" id="skip">Überspringen</button>
+    <button type="button" id="end">Beenden</button>
+    <button type="button" id="help">Hilfe</button>
+    <button type="button" id="delete" class="danger">Daten löschen</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const log = $("log"), input = $("input"), form = $("form"), tools = $("tools");
+  let code = null, phase = null, busy = false;
+
+  function add(text, cls) {
+    const el = document.createElement("div");
+    el.className = "msg " + cls;
+    el.textContent = text;          // textContent, nie innerHTML: keine Skriptausführung aus Texten
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function render(data) {
+    code = data.session_code; phase = data.phase;
+    $("code").textContent = "Ihr Code: " + code;
+    for (const m of data.messages) {
+      const cls = ["warning", "crisis"].includes(m.kind) ? "bot " + m.kind : "bot";
+      add(m.text, cls);
+    }
+    const final = data.ended;
+    input.disabled = final || busy;
+    $("send").disabled = final || busy;
+    for (const id of ["pause", "skip", "end"]) $(id).disabled = final || busy;
+    $("pause").textContent = phase === "paused" ? "Fortsetzen" : "Pause";
+    if (final) add("Das Gespräch ist beendet.", "system");
+  }
+
+  async function api(path, options) {
+    busy = true; $("send").disabled = true;
+    try {
+      const res = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
+    } finally { busy = false; }
+  }
+
+  async function post(body) {
+    try { render(await api(`/api/sessions/${code}/messages`, { method: "POST", body: JSON.stringify(body) })); }
+    catch (e) { add("Das hat gerade nicht geklappt. Bitte versuchen Sie es noch einmal.", "system"); }
+    input.disabled = false; $("send").disabled = false; input.focus();
+  }
+
+  $("start").addEventListener("click", async () => {
+    $("start").hidden = true; form.hidden = false; tools.hidden = false;
+    try { render(await api("/api/sessions", { method: "POST" })); input.focus(); }
+    catch (e) { add("Das Gespräch konnte nicht gestartet werden.", "system"); }
+  });
+
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const text = input.value.trim();
+    if (!text || busy) return;
+    add(text, "user"); input.value = "";
+    post({ text });
+  });
+  input.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); form.requestSubmit(); }
+  });
+
+  $("pause").addEventListener("click", () => post({ action: phase === "paused" ? "resume" : "pause" }));
+  $("skip").addEventListener("click", () => post({ action: "skip" }));
+  $("end").addEventListener("click", () => { if (confirm("Möchten Sie das Gespräch beenden?")) post({ action: "end" }); });
+  $("help").addEventListener("click", async () => {
+    try { add((await api("/api/help")).text, "bot"); } catch (e) { add("Hilfe ist gerade nicht erreichbar.", "system"); }
+  });
+  $("delete").addEventListener("click", async () => {
+    if (!code || !confirm("Alle Ihre Antworten werden endgültig gelöscht. Fortfahren?")) return;
+    try {
+      await api(`/api/sessions/${code}`, { method: "DELETE" });
+      add("Ihre Daten wurden gelöscht.", "system");
+      input.disabled = true; $("send").disabled = true;
+      for (const id of ["pause", "skip", "end", "delete"]) $(id).disabled = true;
+    } catch (e) { add("Das Löschen hat nicht geklappt. Bitte wenden Sie sich an das Forschungsteam.", "system"); }
+  });
+})();
+</script>
+</body>
+</html>
