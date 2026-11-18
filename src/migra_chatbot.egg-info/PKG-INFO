@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: migra-chatbot
+Version: 0.1.0
+Summary: KI-gestützter Interview-Assistent für Migrationsforschung
+Requires-Python: >=3.11
+Requires-Dist: fastapi>=0.115
+Requires-Dist: pydantic>=2.8
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: uvicorn[standard]>=0.30
+Provides-Extra: llm
+Requires-Dist: openai>=1.40; extra == "llm"
+Provides-Extra: dev
+Requires-Dist: httpx>=0.27; extra == "dev"
+Requires-Dist: pytest>=8.3; extra == "dev"
